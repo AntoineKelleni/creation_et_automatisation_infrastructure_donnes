@@ -7,6 +7,11 @@ Dans le cadre de ce projet, l’objectif est de concevoir et automatiser une **i
 Le projet est réalisé sous forme de **POC (Proof of Concept)**, avec une architecture automatisée, reproductible et monitorée, conforme aux bonnes pratiques Data Engineer.
 
 ---
+<p align="center">
+  <img src="docs/images/Diagramme.png" alt="rapport PowerBI dashboard" width="1400">
+  <br>
+  <em>Vue d’ensemble du pipeline ETL orchestré avec Apache Airflow</em>
+</p>
 
 ## Périmètre fonctionnel du POC
 
@@ -22,11 +27,6 @@ Le périmètre du projet couvre les axes suivants :
 ---
 
 ##  Architecture technique
-<p align="center">
-  <img src="docs/images/Diagramme.png" alt="rapport PowerBI dashboard" width="1400">
-  <br>
-  <em>Vue d’ensemble du pipeline ETL orchestré avec Apache Airflow</em>
-</p>
 ###  Composants principaux, stack utilisée
 
 - **Docker / Docker Compose** : orchestration des services
@@ -176,3 +176,4 @@ Ce projet démontre la capacité à :
 - produire des indicateurs exploitables pour la prise de décision
 
 Il constitue une base solide pour une mise en production future.
+
