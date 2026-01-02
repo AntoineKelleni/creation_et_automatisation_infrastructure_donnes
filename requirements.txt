@@ -1,0 +1,5 @@
+great-expectations
+pandas
+sqlalchemy<2.0
+psycopg2-binary
+openpyxl

@@ -1,0 +1,57 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: sport_poc_postgres
+    environment:
+      POSTGRES_DB: sport_poc
+      POSTGRES_USER: sport_user
+      POSTGRES_PASSWORD: sport_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  airflow:
+    image: apache/airflow:2.9.3
+    container_name: sport_poc_airflow
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://sport_user:sport_pass@postgres:5432/sport_poc
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+
+      PG_HOST: postgres
+      PG_PORT: "5432"
+      PG_DB: sport_poc
+      PG_USER: sport_user
+      PG_PASSWORD: sport_pass
+
+      MIN_ACTIVITIES_ROWS: "2000"
+
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./src:/opt/airflow/project/src
+      - ./data:/opt/airflow/project/data
+      - ./requirements.txt:/opt/airflow/project/requirements.txt
+      - ./src/db:/opt/airflow/project/src/db
+    command: >
+      bash -c "
+      pip install -r /opt/airflow/project/requirements.txt &&
+      airflow db migrate &&
+      airflow users create
+        --username admin
+        --password admin
+        --firstname Admin
+        --lastname Admin
+        --role Admin
+        --email admin@example.com || true &&
+      airflow webserver & airflow scheduler
+      "
+
+volumes:
+  pgdata:
