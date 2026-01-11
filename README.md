@@ -7,11 +7,6 @@ Dans le cadre de ce projet, l’objectif est de concevoir et automatiser une **i
 Le projet est réalisé sous forme de **POC (Proof of Concept)**, avec une architecture automatisée, reproductible et monitorée, conforme aux bonnes pratiques Data Engineer.
 
 ---
-<p align="center">
-  <img src="docs/images/Diagramme.png" alt="rapport PowerBI dashboard" width="1400">
-  <br>
-  <em>Vue d’ensemble du pipeline ETL orchestré avec Apache Airflow</em>
-</p>
 
 ## Périmètre fonctionnel du POC
 
@@ -27,6 +22,11 @@ Le périmètre du projet couvre les axes suivants :
 ---
 
 ##  Architecture technique
+<p align="center">
+  <img src="docs/images/Diagramme.png" alt="rapport PowerBI dashboard" width="1400">
+  <br>
+  <em>Vue d’ensemble du pipeline ETL orchestré avec Apache Airflow</em>
+</p>
 ###  Composants principaux, stack utilisée
 
 - **Docker / Docker Compose** : orchestration des services
@@ -38,7 +38,7 @@ Le périmètre du projet couvre les axes suivants :
 
 ---
 
-## 🗄️ Modélisation des données
+##  Modélisation des données
 
 ### Schémas PostgreSQL
 
@@ -56,7 +56,7 @@ Le périmètre du projet couvre les axes suivants :
 
 ---
 
-##  Pipelines de données (ETL)
+## Pipelines de données (ETL)
 
 Les pipelines sont orchestrés par **Apache Airflow**.
 
@@ -72,13 +72,27 @@ Les pipelines sont orchestrés par **Apache Airflow**.
 - Génération automatique d’activités sportives
 - Simulation d’une API de type Strava
 - Alimentation de la table `clean.activities`
+- **Planification via CRON** : exécution quotidienne (`0 7 * * *`)
+- Ce DAG produit un nouveau lot de données sportives de manière automatique
 
 ### DAG `poc_05_quality_checks`
 
 - Exécution de contrôles qualité bloquants
 - Vérification des règles de cohérence et métier
-- Arrêt du pipeline en cas d’anomalie critique
+- **DAG non planifié volontairement**
+- Déclenché automatiquement via un **TriggerDagRunOperator** à la fin du DAG `poc_02_generate_activities`
+- Joue le rôle de **garde-fou qualité** avant les calculs métiers
 
+### Chaînage des DAGs
+
+Le pipeline est chaîné de la manière suivante :
+```
+poc_02_generate_activities (CRON)
+↓
+TriggerDagRunOperator
+↓
+poc_05_quality_checks (contrôles qualité)
+```
 ---
 
 ##  Tests de qualité des données
@@ -176,4 +190,3 @@ Ce projet démontre la capacité à :
 - produire des indicateurs exploitables pour la prise de décision
 
 Il constitue une base solide pour une mise en production future.
-
